@@ -11,15 +11,15 @@ dotnet restore
 CD NadekoBot\src\NadekoBot\
 dotnet build --configuration Release
 IF EXIST %rootdir%\NadekoBot\ (
-ROBOCOPY %rootdir%\NadekoBot\ %rootdir%\NadekoBot_Old\ /E /NFL /NDL /NJH /NJS /NC /NS /NP
+ROBOCOPY %rootdir%\NadekoBot\ %rootdir%\NadekoBot_Old\ /E > log:nul
 ECHO Old files backed up to NadekoBot_Old
-TIMEOUT /t 10 /nobreak
 RMDIR %rootdir%\NadekoBot /S /Q
-ROBOCOPY %rootdir%\NadekoInstall_Temp %rootdir%\NadekoBot /E /MOVE /NFL /NDL /NJH /NJS /NC /NS /NP
-TIMEOUT /t 10 /nobreak
-RMDIR %rootdir%\NadekoInstall_Temp /S /Q 
+ROBOCOPY %rootdir%\NadekoInstall_Temp %rootdir%\ /E /MOVE > log:nul
+RMDIR %rootdir%\NadekoInstall_Temp /S /Q
+COPY %rootdir%\NadekoBot_Old\src\NadekoBot\credentials.json %rootdir%\NadekoBot\src\NadekoBot\credentials.json
+COPY %rootdir%\NadekoBot_Old\src\NadekoBot\bin\Release\netcoreapp1.0\data\NadekoBot.db %rootdir%\NadekoBot\src\NadekoBot\bin\Release\netcoreapp1.0\data\NadekoBot.db
 ) ELSE (
-ROBOCOPY %rootdir%\NadekoInstall_Temp %rootdir%\NadekoBot /E /MOVE /NFL /NDL /NJH /NJS /NC /NS /NP
+ROBOCOPY %rootdir%\NadekoInstall_Temp %rootdir%\ /E /MOVE > log:nul
 )
 @TITLE Installation complete!
 ECHO Installation complete
