@@ -7,9 +7,11 @@ SET build2=%root%NadekoInstall_Temp\NadekoBot\discord.net\src\Discord.Net.Comman
 SET build3=%root%NadekoInstall_Temp\NadekoBot\src\NadekoBot\
 ::Deleting traces of last setup for the sake of clean folders
 IF EXIST "%root%NadekoInstall_Temp\" ( RMDIR "%root%NadekoInstall_Temp" /S /Q )
-::Checks that both git and dotnet are installed
+::Checks that both git and dotnet are installed and checks that windows 8 or newer is installed
 dotnet --version >nul 2>&1 || GOTO :dotnet
 git --version >nul 2>&1 || GOTO :git
+FOR /F "tokens=4-7 delims=[.] " %%i IN ('VER') DO (IF %%i==Version (SET v=%%j.%%k) ELSE (set v=%%i.%%j))
+IF %v% LSS "6.2" (GOTO :oldoperatingsystem)
 ::Creates the install directory to work in and get the current directory because spaces ruins everythin otherwise
 CD /D %root%
 SET rootdir=%cd%
@@ -58,21 +60,29 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 	TITLE Error!
 	ECHO dotnet not found, make sure it's been installed as per the guides instructions!
 	ECHO Press any key to exit.
-	PAUSE >nul 2>&1
 	CD /D "%root%" >nul 2>&1
+	PAUSE >nul 2>&1
 	GOTO :EOF
 :git
 	::Terminates the batch script if it can't run git --version
 	TITLE Error!
 	ECHO git not found, make sure it's been installed as per the guides instructions!
 	ECHO Press any key to exit.
-	PAUSE >nul 2>&1
 	CD /D "%root%"
+	PAUSE >nul 2>&1
+	GOTO :EOF
+:oldoperatingsystem
+	::Terminatesd the batch script if running on Windows 7 or older
+	TITLE Error!
+	ECHO You are using a version of windows too old for NadekoBot
+	Echo Press any key to exit.
+	CD /D "%root%"
+	PAUSE >nul 2>&1
 	GOTO :EOF
 :end
 	::Normal execution of end of script
 	TITLE Installation complete!
 	ECHO.
 	ECHO Installation complete, press any key to close this window!
-	PAUSE >nul 2>&1
 	CD /D "%root%"
+	PAUSE >nul 2>&1
