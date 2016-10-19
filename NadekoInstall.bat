@@ -28,8 +28,6 @@ dotnet build --configuration Release >nul 2>&1
 CD /D %build3%
 dotnet restore >nul 2>&1
 dotnet build --configuration Release >nul 2>&1
-::Copying music requriements
-COPY %build3%libs\* %build3% >nul 2>&1
 ::Attempts to backup old files if they currently exist in the same folder as the batch file
 IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 :freshinstall
