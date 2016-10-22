@@ -45,6 +45,9 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 	COPY "%root%NadekoBot_Old\src\NadekoBot\bin\Release\netcoreapp1.0\data\NadekoBot.db" "%root%NadekoBot\src\NadekoBot\bin\Release\netcoreapp1.0\data\NadekoBot.db" >nul 2>&1
 	ECHO.
 	ECHO NadekoBot.db copied to new folder
+	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\data" "%root%NadekoBot\src\NadekoBot\data" /E >nul 2>&1
+	ECHO.
+	ECHO data folder copied to new folder
 	GOTO :end
 :dotnet
 	::Terminates the batch script if it can't run dotnet --version
