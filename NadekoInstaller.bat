@@ -4,8 +4,9 @@ TITLE Downloading NadekoBot, please wait
 SET root=%~dp0
 CD /D %root%
 SET rootdir=%cd%
-SET build=%root%NadekoInstall_Temp\NadekoBot\src\NadekoBot\
-SET rootinstall=%root%NadekoInstall_Temp\NadekoBot\
+SET build1=%root%NadekoInstall_Temp\NadekoBot\discord.net\src\Discord.Net\
+SET build2=%root%NadekoInstall_Temp\NadekoBot\discord.net\src\Discord.Net.Commands\
+SET build3=%root%NadekoInstall_Temp\NadekoBot\src\NadekoBot\
 SET installtemp=%root%NadekoInstall_Temp\
 ::Deleting traces of last setup for the sake of clean folders, if by some miracle it still exists
 IF EXIST "%root%NadekoInstall_Temp\" ( RMDIR "%root%NadekoInstall_Temp" /S /Q )
@@ -20,9 +21,12 @@ git clone -b 1.0 --recursive -v https://github.com/Kwoth/NadekoBot.git >nul
 TITLE Installing NadekoBot, please wait
 ECHO Installing...
 ::Building Nadeko
-CD /D %rootinstall%
+CD /D %build1%
 dotnet restore >nul 2>&1
-CD /D %build%
+CD /D %build2%
+dotnet restore >nul 2>&1
+CD /D %build3%
+dotnet restore >nul 2>&1
 dotnet build --configuration Release >nul 2>&1
 ::Attempts to backup old files if they currently exist in the same folder as the batch file
 IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
