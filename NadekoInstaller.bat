@@ -9,7 +9,7 @@ SET build2=%root%NadekoInstall_Temp\NadekoBot\discord.net\src\Discord.Net.Comman
 SET build3=%root%NadekoInstall_Temp\NadekoBot\src\NadekoBot\
 SET installtemp=%root%NadekoInstall_Temp\
 ::Deleting traces of last setup for the sake of clean folders, if by some miracle it still exists
-IF EXIST "%root%NadekoInstall_Temp\" ( RMDIR "%root%NadekoInstall_Temp" /S /Q )
+IF EXIST "%root%NadekoInstall_Temp\" ( RMDIR "%root%NadekoInstall_Temp" /S /Q >nul 2>&1)
 ::Checks that both git and dotnet are installed
 dotnet --version >nul 2>&1 || GOTO :dotnet
 git --version >nul 2>&1 || GOTO :git
@@ -17,8 +17,11 @@ git --version >nul 2>&1 || GOTO :git
 MKDIR NadekoInstall_Temp
 CD /D %installtemp%
 ::Downloads the latest version of Nadeko
-git clone -b 1.0 --recursive -v https://github.com/Kwoth/NadekoBot.git >nul
+ECHO Downloading Nadeko...
+ECHO.
+git clone -b 1.0 --recursive --depth 1 --progress https://github.com/Kwoth/NadekoBot.git >nul
 TITLE Installing NadekoBot, please wait
+ECHO.
 ECHO Installing...
 ::Building Nadeko
 CD /D %build1%
@@ -37,7 +40,7 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 :backupinstall
 	TITLE Backing up old files
 	::Recursively copies all files and folders from NadekoBot to NadekoBot_Old
-	ROBOCOPY "%root%NadekoBot" "%root%NadekoBot_Old" /E /MOVE >nul 2>&1
+	ROBOCOPY "%root%NadekoBot" "%root%NadekoBot_Old" /MIR >nul 2>&1
 	ECHO.
 	ECHO Old files backed up to NadekoBot_Old
 	::Moves the setup Nadeko folder
@@ -72,7 +75,7 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 :end
 	::Normal execution of end of script
 	TITLE Installation complete!
-	CD /D "%root%" 
+	CD /D "%root%"
 	RMDIR /S /Q "%installtemp%" >nul 2>&1
 	ECHO.
 	ECHO Installation complete, press any key to close this window!
