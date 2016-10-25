@@ -9,17 +9,19 @@ SET build2=%root%NadekoInstall_Temp\NadekoBot\discord.net\src\Discord.Net.Comman
 SET build3=%root%NadekoInstall_Temp\NadekoBot\src\NadekoBot\
 SET installtemp=%root%NadekoInstall_Temp\
 ::Deleting traces of last setup for the sake of clean folders, if by some miracle it still exists
-IF EXIST "%root%NadekoInstall_Temp\" ( RMDIR "%root%NadekoInstall_Temp" /S /Q >nul 2>&1)
+IF EXIST %installtemp% ( RMDIR %installtemp% /S /Q >nul 2>&1)
 ::Checks that both git and dotnet are installed
 dotnet --version >nul 2>&1 || GOTO :dotnet
 git --version >nul 2>&1 || GOTO :git
 ::Creates the install directory to work in and get the current directory because spaces ruins everything otherwise
+:start
 MKDIR NadekoInstall_Temp
 CD /D %installtemp%
 ::Downloads the latest version of Nadeko
 ECHO Downloading Nadeko...
 ECHO.
 git clone -b 1.0 --recursive --depth 1 --progress https://github.com/Kwoth/NadekoBot.git >nul
+IF %ERRORLEVEL% EQU 128 (GOTO :giterror)
 TITLE Installing NadekoBot, please wait
 ECHO.
 ECHO Installing...
@@ -82,6 +84,11 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 	PAUSE >nul 2>&1
 	CD /D "%root%"
 	GOTO :EOF
+:giterror
+	ECHO.
+	ECHO Git clone failed, trying again
+	RMDIR %installtemp% /S /Q >nul 2>&1
+	GOTO :start
 :copyerror
 	::If at any point a copy error is encountered 
 	TITLE Error!
