@@ -36,25 +36,35 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 :freshinstall
 	::Moves the NadekoBot folder to keep things tidy
 	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
+	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
 	GOTO :end
 :backupinstall
 	TITLE Backing up old files
+	ECHO.
+	ECHO Make sure to close any files such as NadekoBot.db before PRESSing ANY KEY TO CONTINUE to prevent data loss
+	PAUSE >nul 2>&1
 	::Recursively copies all files and folders from NadekoBot to NadekoBot_Old
 	ROBOCOPY "%root%NadekoBot" "%root%NadekoBot_Old" /MIR >nul 2>&1
+	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
 	ECHO.
 	ECHO Old files backed up to NadekoBot_Old
-	::Moves the setup Nadeko folder
-	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
 	::Copies the credentials and database from the backed up data to the new folder
-	COPY "%root%NadekoBot_Old\src\NadekoBot\credentials.json" "%root%NadekoBot\src\NadekoBot\credentials.json" >nul 2>&1
+	COPY "%root%NadekoBot_Old\src\NadekoBot\credentials.json" "%installtemp%NadekoBot\src\NadekoBot\credentials.json" >nul 2>&1
+	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
 	ECHO.
 	ECHO credentials.json copied to new folder
-	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\bin" "%root%NadekoBot\src\NadekoBot\bin" /E >nul 2>&1
+	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\bin" "%installtemp%NadekoBot\src\NadekoBot\bin" /E >nul 2>&1
+	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
 	ECHO.
 	ECHO Old bin folder copied to new folder
-	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\data" "%root%NadekoBot\src\NadekoBot\data" /E >nul 2>&1
+	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\data" "%installtemp%NadekoBot\src\NadekoBot\data" /E >nul 2>&1
+	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
 	ECHO.
 	ECHO Old data folder copied to new folder
+	::Moves the setup Nadeko folder
+	RMDIR "%root%NadekoBot\" /S /Q >nul 2>&1
+	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
+	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
 	GOTO :end
 :dotnet
 	::Terminates the batch script if it can't run dotnet --version
@@ -69,6 +79,16 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 	TITLE Error!
 	ECHO git not found, make sure it's been installed as per the guides instructions!
 	ECHO Press any key to exit.
+	PAUSE >nul 2>&1
+	CD /D "%root%"
+	GOTO :EOF
+:copyerror
+	::If at any point a copy error is encountered 
+	TITLE Error!
+	ECHO.
+	ECHO An error in copying data has been encountered.
+	ECHO.
+	ECHO Make sure to close any files, such as `NadekoBot.db` before continuing
 	PAUSE >nul 2>&1
 	CD /D "%root%"
 	GOTO :EOF
