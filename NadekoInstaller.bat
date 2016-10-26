@@ -38,7 +38,7 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 :freshinstall
 	::Moves the NadekoBot folder to keep things tidy
 	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
-	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
+	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	GOTO :end
 :backupinstall
 	TITLE Backing up old files
@@ -47,26 +47,26 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 	PAUSE >nul 2>&1
 	::Recursively copies all files and folders from NadekoBot to NadekoBot_Old
 	ROBOCOPY "%root%NadekoBot" "%root%NadekoBot_Old" /MIR >nul 2>&1
-	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
+	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO Old files backed up to NadekoBot_Old
 	::Copies the credentials and database from the backed up data to the new folder
 	COPY "%root%NadekoBot_Old\src\NadekoBot\credentials.json" "%installtemp%NadekoBot\src\NadekoBot\credentials.json" >nul 2>&1
-	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
+	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO credentials.json copied to new folder
 	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\bin" "%installtemp%NadekoBot\src\NadekoBot\bin" /E >nul 2>&1
-	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
+	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO Old bin folder copied to new folder
 	ROBOCOPY "%root%NadekoBot_Old\src\NadekoBot\data" "%installtemp%NadekoBot\src\NadekoBot\data" /E >nul 2>&1
-	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
+	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	ECHO.
 	ECHO Old data folder copied to new folder
 	::Moves the setup Nadeko folder
 	RMDIR "%root%NadekoBot\" /S /Q >nul 2>&1
 	ROBOCOPY "%root%NadekoInstall_Temp" "%rootdir%" /E /MOVE >nul 2>&1
-	IF %ERRORLEVEL% NEQ 0 (IF %ERRORLEVEL% NEQ 1 (IF %ERRORLEVEL% NEQ 3 GOTO :copyerror))
+	IF %ERRORLEVEL% GEQ 8 (GOTO :copyerror)
 	GOTO :end
 :dotnet
 	::Terminates the batch script if it can't run dotnet --version
