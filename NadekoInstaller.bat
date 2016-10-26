@@ -93,9 +93,9 @@ IF EXIST "%root%NadekoBot\" (GOTO :backupinstall)
 	::If at any point a copy error is encountered 
 	TITLE Error!
 	ECHO.
-	ECHO An error in copying data has been encountered.
+	ECHO An error in copying data has been encountered, returning an exit code of %ERRORLEVEL%
 	ECHO.
-	ECHO Make sure to close any files, such as `NadekoBot.db` before continuing
+	ECHO Make sure to close any files, such as `NadekoBot.db` before continuing or try running the installer as an Administrator
 	PAUSE >nul 2>&1
 	CD /D "%root%"
 	GOTO :EOF
